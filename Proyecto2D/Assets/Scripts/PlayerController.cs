@@ -28,22 +28,51 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Movement();
-
+        
 
 
     }
 
     void Movement()
     {
-        if (Input.GetKey(KeyCode.D))
-        {
-            rb.velocity = new Vector2(speed, rb.velocity.y);
-            GetComponent<SpriteRenderer>().flipX = false;
+        if (Input.GetKey(KeyCode.LeftShift))
+        {   
+           
+            if (Input.GetKey(KeyCode.D))
+            {
+                rb.velocity = new Vector2(speed * 2, rb.velocity.y);
+                GetComponent<SpriteRenderer>().flipX = false;
+                animator.SetBool("isRunning", true);
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                rb.velocity = new Vector2(-speed * 2, rb.velocity.y);
+                GetComponent<SpriteRenderer>().flipX = true;
+                animator.SetBool("isRunning", true);
+            }
+            else
+            {
+                animator.SetBool("isRunning", false);
+            }
         }
-        else if (Input.GetKey(KeyCode.A))
+        else
         {
-            rb.velocity = new Vector2(-speed, rb.velocity.y);
-            GetComponent<SpriteRenderer>().flipX = true;
+            if (Input.GetKey(KeyCode.D))
+            {
+                rb.velocity = new Vector2(speed, rb.velocity.y);
+                GetComponent<SpriteRenderer>().flipX = false;
+                animator.SetBool("isWalking", true);
+            }
+            else if (Input.GetKey(KeyCode.A))
+            {
+                rb.velocity = new Vector2(-speed, rb.velocity.y);
+                GetComponent<SpriteRenderer>().flipX = true;
+                animator.SetBool("isWalking", true);
+            }
+            else
+            {
+                animator.SetBool("isWalking", false);
+            }
         }
     }
 }
