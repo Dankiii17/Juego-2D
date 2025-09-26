@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditorInternal;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -15,12 +16,15 @@ public class PlayerController : MonoBehaviour
     private Transform transform;
     private Rigidbody2D rb;
     private Animator animator;
-
+    
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         transform = GetComponent<Transform>();
         animator = GetComponent<Animator>();
+        
+        
 
     }
 
@@ -36,8 +40,8 @@ public class PlayerController : MonoBehaviour
     void Movement()
     {
         if (Input.GetKey(KeyCode.LeftShift))
-        {   
-           
+        {
+
             if (Input.GetKey(KeyCode.D))
             {
                 rb.velocity = new Vector2(speed * 2, rb.velocity.y);
@@ -73,6 +77,7 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("isWalking", false);
             }
+            
         }
     }
 }
