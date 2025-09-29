@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditorInternal;
@@ -16,15 +18,13 @@ public class PlayerController : MonoBehaviour
     private Transform transform;
     private Rigidbody2D rb;
     private Animator animator;
-    
-    
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         transform = GetComponent<Transform>();
         animator = GetComponent<Animator>();
-        
-        
 
     }
 
@@ -32,8 +32,8 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Movement();
-        
-
+        checkAnimation();
+        checkjump();
 
     }
 
@@ -45,39 +45,66 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKey(KeyCode.D))
             {
                 rb.velocity = new Vector2(speed * 2, rb.velocity.y);
-                GetComponent<SpriteRenderer>().flipX = false;
-                animator.SetBool("isRunning", true);
+
             }
             else if (Input.GetKey(KeyCode.A))
             {
                 rb.velocity = new Vector2(-speed * 2, rb.velocity.y);
-                GetComponent<SpriteRenderer>().flipX = true;
-                animator.SetBool("isRunning", true);
+
             }
-            else
-            {
-                animator.SetBool("isRunning", false);
-            }
+
         }
         else
         {
             if (Input.GetKey(KeyCode.D))
             {
                 rb.velocity = new Vector2(speed, rb.velocity.y);
-                GetComponent<SpriteRenderer>().flipX = false;
-                animator.SetBool("isWalking", true);
+
             }
             else if (Input.GetKey(KeyCode.A))
             {
                 rb.velocity = new Vector2(-speed, rb.velocity.y);
-                GetComponent<SpriteRenderer>().flipX = true;
-                animator.SetBool("isWalking", true);
+
             }
-            else
-            {
-                animator.SetBool("isWalking", false);
-            }
+
+        }
+        
+    }
+
+    void checkjump()
+    {
+        if (Input.GetKey(KeyCode.Space) && gameObject.GetComponentInChildren<CheckGround>().isGround)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpforce);
+        }
+    }
+    void checkAnimation()
+    {
+        if (rb.velocity.x < -0.1f)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+           
+        }
+        else if (rb.velocity.x > 0.1f )
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
             
+        }
+        if (Math.Abs(rb.velocity.x) >= speed * 2)
+        {
+            animator.SetBool("isRunning", true);
+            animator.SetBool("isWalking", false);
+        }
+        else if (Math.Abs(rb.velocity.x) > 0.1f)
+        {
+
+            animator.SetBool("isWalking", true);
+            animator.SetBool("isRunning", false);
+        }
+        else
+        {
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isRunning", false);
         }
     }
 }
