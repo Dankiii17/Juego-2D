@@ -12,13 +12,13 @@ public class CheckGround : MonoBehaviour
     {
         
     }
-    public void OnTriggerEnter2D(Collider2D collision)
+    public void OnTriggerEnter2D(Collider2D other)
     {
         isGround = true;
     }
 
     // Update is called once per frame
-    public void OnTriggerExit(Collider other)
+    public void OnTriggerExit2D(Collider2D other)
     {
         isGround = false;
     }
