@@ -39,33 +39,33 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        // if (!isDashing)
-        // {
-            Movement();
-            checkjump();
-        // }
-       checkAnimation();
+
+        Movement();
+        checkjump();
+
+        checkAnimation();
 
 
     }
 
     void Movement()
     {
-        //  if (Input.GetKeyDown(KeyCode.Q))
-        // {
-            // dashear();
-        // }
+
+        if (isDashing)
+        {
+            return;
+        }
         if (Input.GetKey(KeyCode.LeftShift))
         {
 
             if (Input.GetKey(KeyCode.D))
             {
-                rb.velocity = new Vector2(speed * 2, rb.velocity.y);
+                rb.velocity = new Vector2((float)(speed * 1.3), rb.velocity.y);
 
             }
             else if (Input.GetKey(KeyCode.A))
             {
-                rb.velocity = new Vector2(-speed * 2, rb.velocity.y);
+                rb.velocity = new Vector2((float)(-speed * 1.3), rb.velocity.y);
 
             }
 
@@ -84,17 +84,15 @@ public class PlayerController : MonoBehaviour
             }
 
         }
-       
-        
+        if (Input.GetKey(KeyCode.W) && canDash)
+        {
+            StartCoroutine(dash());
+        }
+
+
     }
 
-    // void dashear()
-    // {
-    //     rb.velocity = new Vector2(speed * 3, rb.velocity.y);
-    //     isDashing = true;
 
-        
-    // }
     void checkjump()
     {
         if (Input.GetKey(KeyCode.Space) && gameObject.GetComponentInChildren<CheckGround>().isGround)
@@ -103,39 +101,44 @@ public class PlayerController : MonoBehaviour
 
 
         }
-        
-        
+
+
     }
     void checkAnimation()
+{
+    // Dash tiene prioridad
+    if (isDashing)
     {
-        if (Math.Abs(rb.velocity.y) > 0.1f)
-        {
-            animator.SetBool("isJumping", true);
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isRunning", false);
-        }
-        else if(gameObject.GetComponentInChildren<CheckGround>().isGround)
-        {
-            animator.SetBool("isJumping", false);
-        }
-        if (rb.velocity.x < -0.1f)
-        {
-            GetComponent<SpriteRenderer>().flipX = true;
+        animator.SetBool("isDashing", true);
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", false);
+        animator.SetBool("isJumping", false);
+        return; // Salimos, nada más se procesa
+    }
+    else
+    {
+        animator.SetBool("isDashing", false);
+    }
 
-        }
-        else if (rb.velocity.x > 0.1f)
-        {
-            GetComponent<SpriteRenderer>().flipX = false;
+    // Salto tiene segunda prioridad
+    if (!gameObject.GetComponentInChildren<CheckGround>().isGround)
+    {
+        animator.SetBool("isJumping", true);
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", false);
+    }
+    else
+    {
+        animator.SetBool("isJumping", false);
 
-        }
-        if (Math.Abs(rb.velocity.x) >= speed * 2)
+        // Correr y caminar
+        if (Math.Abs(rb.velocity.x) > speed)
         {
             animator.SetBool("isRunning", true);
             animator.SetBool("isWalking", false);
         }
         else if (Math.Abs(rb.velocity.x) > 0.1f)
         {
-
             animator.SetBool("isWalking", true);
             animator.SetBool("isRunning", false);
         }
@@ -144,6 +147,29 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isWalking", false);
             animator.SetBool("isRunning", false);
         }
-        
+    }
+
+    // Flip sprite
+    if (rb.velocity.x < -0.1f)
+        GetComponent<SpriteRenderer>().flipX = true;
+    else if (rb.velocity.x > 0.1f)
+        GetComponent<SpriteRenderer>().flipX = false;
+}
+
+    private IEnumerator dash()
+    {
+        canDash = false;
+        isDashing = true;
+        float originalgravity = rb.gravityScale;
+        rb.gravityScale = 0;
+
+        float direccion = GetComponent<SpriteRenderer>().flipX ? -1 : 1;
+
+        rb.velocity = new Vector2(speed * dashForce *direccion, 0);
+        yield return new WaitForSeconds(dashingTime);
+        isDashing = false;
+        rb.gravityScale = originalgravity;
+        yield return new WaitForSeconds(dashingCooldown);
+        canDash = true;
     }
 }
