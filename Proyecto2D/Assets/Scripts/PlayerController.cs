@@ -18,22 +18,24 @@ public class PlayerController : MonoBehaviour
     public float dashForce;
     public float dashingTime = 0.2f;
 
+
     public float dashingCooldown = 5f;
     public float speed;
     public float jumpforce;
-
+    public GameObject proyectilPrefab;
 
     private Transform trf;
     private Rigidbody2D rb;
     private Animator animator;
 
+    
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         trf = GetComponent<Transform>();
         animator = GetComponent<Animator>();
-
+       
     }
 
     // Update is called once per frame
@@ -42,10 +44,33 @@ public class PlayerController : MonoBehaviour
 
         Movement();
         checkjump();
-
         checkAnimation();
 
 
+    }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            animator.SetTrigger("shoot");
+            Shoot();
+        }
+        
+    }
+
+    private void Shoot()
+    {
+        Vector2 posProyectil;
+        if (GetComponent<SpriteRenderer>().flipX)
+        {
+            posProyectil = new Vector2(trf.position.x - 2.75f, trf.position.y - 1.2f);
+        }
+        else
+        {
+            posProyectil = new Vector2(trf.position.x + 2.75f, trf.position.y - 1.2f);
+        }
+
+        Instantiate(proyectilPrefab, posProyectil, Quaternion.identity);
     }
 
     void Movement()
@@ -165,11 +190,14 @@ public class PlayerController : MonoBehaviour
 
         float direccion = GetComponent<SpriteRenderer>().flipX ? -1 : 1;
 
-        rb.velocity = new Vector2(speed * dashForce *direccion, 0);
+        rb.velocity = new Vector2(speed * dashForce * direccion, 0);
+       
         yield return new WaitForSeconds(dashingTime);
+        
         isDashing = false;
         rb.gravityScale = originalgravity;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
+        
     }
 }
