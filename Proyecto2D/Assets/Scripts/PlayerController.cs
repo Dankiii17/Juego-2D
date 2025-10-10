@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
 
 
     public float dashingCooldown = 5f;
+    public float shootCooldown = 2f;
+    public bool canShoot = true;
     public float speed;
     public float jumpforce;
     public GameObject proyectilPrefab;
@@ -50,64 +52,90 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            animator.SetTrigger("shoot");
-            Shoot();
-        }
         
+        if (Input.GetKeyDown(KeyCode.Q) && canShoot)
+        {
+
+            StartCoroutine(Shoot());
+        }
     }
 
-    private void Shoot()
+    private IEnumerator Shoot()
     {
+        canShoot = false;
+        animator.SetTrigger("shoot");
+        yield return new WaitForSeconds(0.3f);
         Vector2 posProyectil;
         if (GetComponent<SpriteRenderer>().flipX)
         {
-            posProyectil = new Vector2(trf.position.x - 2.75f, trf.position.y - 1.2f);
+            
+            posProyectil = new Vector2(trf.position.x - 2f, trf.position.y - 1.2f);
+            
         }
         else
         {
-            posProyectil = new Vector2(trf.position.x + 2.75f, trf.position.y - 1.2f);
+            posProyectil = new Vector2(trf.position.x + 2f, trf.position.y - 1.2f);
         }
 
         Instantiate(proyectilPrefab, posProyectil, Quaternion.identity);
+        yield return new WaitForSeconds(shootCooldown);
+        canShoot = true;
     }
 
     void Movement()
     {
 
+
+
         if (isDashing)
         {
             return;
         }
-        if (Input.GetKey(KeyCode.LeftShift))
+        bool enSuelo = gameObject.GetComponentInChildren<CheckGround>().isGround;
+        if (enSuelo)
         {
-
-            if (Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                rb.velocity = new Vector2((float)(speed * 1.3), rb.velocity.y);
+
+                if (Input.GetKey(KeyCode.D))
+                {
+                    rb.velocity = new Vector2((float)(speed * 1.3), rb.velocity.y);
+
+                }
+                else if (Input.GetKey(KeyCode.A))
+                {
+                    rb.velocity = new Vector2((float)(-speed * 1.3), rb.velocity.y);
+
+                }
 
             }
-            else if (Input.GetKey(KeyCode.A))
+            else
             {
-                rb.velocity = new Vector2((float)(-speed * 1.3), rb.velocity.y);
+                if (Input.GetKey(KeyCode.D))
+                {
+                    rb.velocity = new Vector2(speed, rb.velocity.y);
+
+                }
+                else if (Input.GetKey(KeyCode.A))
+                {
+                    rb.velocity = new Vector2(-speed, rb.velocity.y);
+
+                }
 
             }
-
         }
         else
         {
-            if (Input.GetKey(KeyCode.D))
-            {
-                rb.velocity = new Vector2(speed, rb.velocity.y);
+            // if (Input.GetKey(KeyCode.D))
+            //     {
+            //         rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
 
-            }
-            else if (Input.GetKey(KeyCode.A))
-            {
-                rb.velocity = new Vector2(-speed, rb.velocity.y);
+            //     }
+            //     else if (Input.GetKey(KeyCode.A))
+            //     {
+            //         rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
 
-            }
-
+            //     }
         }
         if (Input.GetKey(KeyCode.W) && canDash)
         {
