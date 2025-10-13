@@ -2033,6 +2033,8 @@ MonoBehaviour:
   dashForce: 2
   dashingTime: 0.6
   dashingCooldown: 5
+  shootCooldown: 2
+  canShoot: 1
   speed: 5
   jumpforce: 5
   proyectilPrefab: {fileID: 941619849333233510, guid: 89c96f6e1a70dc04bad221d6c4734d11, type: 3}
@@ -2141,8 +2143,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.099038266, y: -0.14425798}
-  m_Size: {x: 0.27444926, y: 0.5482532}
+  m_Offset: {x: -0.025486803, y: -0.14425798}
+  m_Size: {x: 0.28495654, y: 0.5482532}
   m_Direction: 0
 --- !u!1 &1868859595
 GameObject:
@@ -2209,7 +2211,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.10735069, y: -0.4230615}
+  m_Offset: {x: -0.0077353716, y: -0.4230615}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2220,7 +2222,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.2842073, y: 0.031659573}
+  m_Size: {x: 0.24667108, y: 0.031659603}
   m_EdgeRadius: 0
 --- !u!114 &1868859598
 MonoBehaviour:
