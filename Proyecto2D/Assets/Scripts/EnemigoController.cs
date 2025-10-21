@@ -7,71 +7,74 @@ using Vector3 = UnityEngine.Vector3;
 
 public class EnemigoController : MonoBehaviour
 {
-    public float distanciaMovimiento = 5f;
-    public float velocidad = 2f;
-    public float tiempoQuieto = 3f;
-    public float knockbackForce = 10f;
-
-    public float knockbackDuration = 0.5f;
-
-    private Vector2 poiscionInicial;
-    private bool moviendoIzq;
-    private float tiempoEspera;
+    public float velocidad = 3f;       
+    public float distanciaAtaque = 0.5f; 
+    public float vida = 1f;            
+    public float dañoEnemigo=1f;
+    public float daño;
+    private Transform jugador;
     private Animator animator;
+    private SpriteRenderer spriteRenderer;
+   
 
-    // Start is called before the first frame update
     void Start()
     {
+        jugador = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
-        poiscionInicial = transform.position;
-        tiempoEspera = tiempoQuieto;
-        moviendoIzq = true;    
+        spriteRenderer = GetComponent<SpriteRenderer>();
+       
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        gestionarGiro();
-        if (tiempoEspera > 0)
+        if (jugador == null) return;
+
+        
+        Vector2 direccion = (jugador.position - transform.position);
+        float distancia = Vector2.Distance(transform.position, jugador.position);
+
+        
+        if (distancia > distanciaAtaque)
         {
-            tiempoEspera -= Time.deltaTime;
-            return;
+            transform.position = Vector2.MoveTowards(transform.position, jugador.position, velocidad * Time.deltaTime);
+            if (animator != null) animator.SetBool("enMovimiento", true);
         }
-        Vector2 destino = moviendoIzq ? poiscionInicial + Vector2.left * distanciaMovimiento :
-                                        poiscionInicial + Vector2.right * distanciaMovimiento;
-
-        transform.position = Vector2.MoveTowards(transform.position, destino, velocidad * Time.deltaTime);
-
-        if (Vector2.Distance(transform.position, destino) < 0.1f)
+        else
         {
-            moviendoIzq = !moviendoIzq;
-            tiempoEspera = tiempoQuieto;
+            if (animator != null) animator.SetBool("enMovimiento", false);
         }
 
+        
+        if (spriteRenderer != null)
+            spriteRenderer.flipX = direccion.x > 0;
     }
-    void gestionarGiro()    
-    {
-        if (tiempoEspera <= 0)
-        {
-            animator.SetBool("enMovimiento", true);
-            if (!moviendoIzq)
-                GetComponent<SpriteRenderer>().flipX = true;
-            else GetComponent<SpriteRenderer>().flipX = false;
-        }
-        else animator.SetBool("enMovimiento", false);
 
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+           
+           PlayerController player = other.gameObject.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.RecibirDaño(dañoEnemigo);
+            }
+        }
     }
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        if (other.gameObject.tag.Equals("Player"))
-        {
-            Rigidbody2D playerRb = other.gameObject.GetComponent<Rigidbody2D>();
-            Vector2 collisionNormal = other.contacts[0].normal;
-            Vector2 direccionKnockback = -collisionNormal;
-            playerRb.AddForce(direccionKnockback * knockbackForce, ForceMode2D.Impulse);
 
-            PlayerController playerController = other.gameObject.GetComponent<PlayerController>();
-            
+    public void RecibirDaño(float daño)
+    {
+        vida -= daño;
+        if (vida <= 0)
+        {
+            animator.SetTrigger("Muerte");
+            StartCoroutine()
         }
+    }
+    public IEnumerator Morir(){
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+
     }
 }

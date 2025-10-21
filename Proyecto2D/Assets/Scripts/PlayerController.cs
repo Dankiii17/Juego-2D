@@ -18,6 +18,13 @@ public class PlayerController : MonoBehaviour
     public float dashForce;
     public float dashingTime = 0.2f;
 
+     public float daño = 1f;                 
+    public Transform attackPoint;           
+    public float attackRange = 1f;          
+    public LayerMask enemigoLayer;          
+    public float attackCooldown = 0.4f;     
+    private bool canAttack = true;
+
 
     public float dashingCooldown = 5f;
     public float shootCooldown = 2f;
@@ -126,16 +133,16 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            // if (Input.GetKey(KeyCode.D))
-            //     {
-            //         rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
+            if (Input.GetKey(KeyCode.D))
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
 
-            //     }
-            //     else if (Input.GetKey(KeyCode.A))
-            //     {
-            //         rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
+                }
+                else if (Input.GetKey(KeyCode.A))
+                {
+                    rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
 
-            //     }
+                }
         }
         if (Input.GetKey(KeyCode.W) && canDash)
         {
@@ -227,5 +234,30 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
         
+    }
+    private IEnumerator Attack()
+    {
+        canAttack = false;
+        animator.SetTrigger("attack"); 
+        
+        yield return new WaitForSeconds(0.15f);
+
+        
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemigoLayer);
+        foreach (Collider2D col in hitEnemies)
+        {
+           
+            EnemigoController enemigo = col.GetComponent<EnemigoController>();
+            if (enemigo != null)
+            {
+                enemigo.RecibirDaño(daño);
+            }
+            else
+            {
+                
+            }
+        }
+    private void RecibirDaño(float daño){
+             
     }
 }
