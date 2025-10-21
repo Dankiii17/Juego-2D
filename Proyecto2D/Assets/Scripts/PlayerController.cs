@@ -31,8 +31,9 @@ public class PlayerController : MonoBehaviour
     public bool canShoot = true;
     public float speed;
     public float jumpforce;
-    public GameObject proyectilPrefab;
+    public float vida = 5f;
 
+    public GameObject proyectilPrefab;
     private Transform trf;
     private Rigidbody2D rb;
     private Animator animator;
@@ -59,12 +60,24 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        
+
         if (Input.GetKeyDown(KeyCode.Q) && canShoot)
         {
 
             StartCoroutine(Shoot());
         }
+        if (Input.GetKeyDown(KeyCode.R) && canAttack)
+        {
+            StartCoroutine(Attack());
+        }
+        if (attackPoint != null)
+{
+            float offsetX = Mathf.Abs(attackPoint.localPosition.x); 
+        if (GetComponent<SpriteRenderer>().flipX)
+            attackPoint.localPosition = new Vector3(-offsetX, attackPoint.localPosition.y, attackPoint.localPosition.z);
+        else
+            attackPoint.localPosition = new Vector3(offsetX, attackPoint.localPosition.y, attackPoint.localPosition.z);
+}
     }
 
     private IEnumerator Shoot()
@@ -133,16 +146,20 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if (Input.GetKey(KeyCode.D))
-                {
-                    rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
+           
+            float horizontalInput = 0f;
+            if (Input.GetKey(KeyCode.D)) horizontalInput = 1f;
+            else if (Input.GetKey(KeyCode.A)) horizontalInput = -1f;
 
-                }
-                else if (Input.GetKey(KeyCode.A))
-                {
-                    rb.velocity = new Vector2(-rb.velocity.x, rb.velocity.y);
+            
+            float currentSpeed = Mathf.Abs(rb.velocity.x);
+            float targetSpeed = speed;
 
-                }
+           
+            if (currentSpeed > speed) targetSpeed = currentSpeed;
+
+            rb.velocity = new Vector2(horizontalInput * targetSpeed, rb.velocity.y);
+
         }
         if (Input.GetKey(KeyCode.W) && canDash)
         {
@@ -226,7 +243,6 @@ public class PlayerController : MonoBehaviour
         float direccion = GetComponent<SpriteRenderer>().flipX ? -1 : 1;
 
         rb.velocity = new Vector2(speed * dashForce * direccion, 0);
-       
         yield return new WaitForSeconds(dashingTime);
         
         isDashing = false;
@@ -238,26 +254,45 @@ public class PlayerController : MonoBehaviour
     private IEnumerator Attack()
     {
         canAttack = false;
-        animator.SetTrigger("attack"); 
-        
+        animator.SetTrigger("attack");
+
         yield return new WaitForSeconds(0.15f);
 
-        
+
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemigoLayer);
         foreach (Collider2D col in hitEnemies)
         {
-           
+
             EnemigoController enemigo = col.GetComponent<EnemigoController>();
-            if (enemigo != null)
+            if (enemigo != null && !enemigo.estaMuerto && !isDashing)
             {
                 enemigo.RecibirDaño(daño);
             }
-            else
-            {
-                
-            }
+
         }
-    private void RecibirDaño(float daño){
-             
+        canAttack = true;
     }
+
+
+    internal void RecibirDaño(float dañoEnemigo)
+    {
+        vida -= dañoEnemigo;
+        Debug.Log("Jugador recibe daño: " + dañoEnemigo + " | Vida restante: " + vida);
+        if (vida <= 0)
+        {
+            animator.SetTrigger("Muerte");
+            Morir();
+        }
+    }
+    public IEnumerator Morir(){
+        yield return new WaitForSeconds(1f);
+        Destroy(gameObject);
+
+    }
+    private void OnDrawGizmosSelected()
+{
+    if (attackPoint == null) return;
+    Gizmos.color = Color.red;
+    Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+}
 }
