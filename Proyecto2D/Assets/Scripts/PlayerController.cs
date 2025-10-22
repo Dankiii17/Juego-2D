@@ -301,7 +301,8 @@ public class PlayerController : MonoBehaviour
 }
     public void SpikesDamage(){
         animator.SetTrigger("Hit");
-        trf.position.x=posicionInicialx;
-        trf.position.y=posicionInicialy;
+        transform.position = new Vector2(posicionInicialx, posicionInicialy+1);
+        rb.velocity = Vector2.zero;
+        
     }
 }

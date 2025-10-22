@@ -72,7 +72,7 @@ public class EnemigoController : MonoBehaviour
             estaMuerto = true;
             animator.SetTrigger("Muerte");
             StartCoroutine(Morir());
-            Debug.Log("FUNCIONA");
+           
         }
     }
     public IEnumerator Morir(){
