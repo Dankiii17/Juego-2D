@@ -17,6 +17,8 @@ public class PlayerController : MonoBehaviour
     public bool canDash = true;
     public float dashForce;
     public float dashingTime = 0.2f;
+    public float posicionInicialx;
+    public float posicionInicialy;
 
      public float daño = 1f;                 
     public Transform attackPoint;           
@@ -45,6 +47,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         trf = GetComponent<Transform>();
         animator = GetComponent<Animator>();
+        posicionInicialx=trf.position.x;
+        posicionInicialy=trf.position.y;
        
     }
 
@@ -274,7 +278,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    internal void RecibirDaño(float dañoEnemigo)
+    public void RecibirDaño(float dañoEnemigo)
     {
         vida -= dañoEnemigo;
         Debug.Log("Jugador recibe daño: " + dañoEnemigo + " | Vida restante: " + vida);
@@ -295,4 +299,9 @@ public class PlayerController : MonoBehaviour
     Gizmos.color = Color.red;
     Gizmos.DrawWireSphere(attackPoint.position, attackRange);
 }
+    public void SpikesDamage(){
+        animator.SetTrigger("Hit");
+        trf.position.x=posicionInicialx;
+        trf.position.y=posicionInicialy;
+    }
 }

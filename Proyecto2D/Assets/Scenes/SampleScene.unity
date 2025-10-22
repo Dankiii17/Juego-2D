@@ -3068,6 +3068,7 @@ MonoBehaviour:
   vida: 1
   "da\xF1oEnemigo": 1
   "da\xF1o": 0
+  estaMuerto: 0
 --- !u!50 &1997103054
 Rigidbody2D:
   serializedVersion: 4
