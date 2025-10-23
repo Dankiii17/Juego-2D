@@ -35,4 +35,24 @@ public class ProyectilController : MonoBehaviour
         }
 
     }
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemigo"))
+        {
+            EnemigoController e =other.GetComponent<EnemigoController>();
+            if(e!=null){
+                e.RecibirDaño(100);
+            }
+        
+            Destroy(gameObject);      
+        }else if (other.CompareTag("Jefe"))
+        {
+            JefeController jefe = other.GetComponent<JefeController>();
+            if(jefe != null){
+                jefe.RecibirDaño(100);
+            }
+            
+            Destroy(gameObject);
+        }
+    }
 }

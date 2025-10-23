@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     public float posicionInicialx;
     public float posicionInicialy;
 
-     public float daño = 1f;                 
+    public float daño = 1f;                 
     public Transform attackPoint;           
     public float attackRange = 1f;          
     public LayerMask enemigoLayer;          
@@ -88,17 +88,17 @@ public class PlayerController : MonoBehaviour
     {
         canShoot = false;
         animator.SetTrigger("shoot");
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.8f);
         Vector2 posProyectil;
         if (GetComponent<SpriteRenderer>().flipX)
         {
             
-            posProyectil = new Vector2(trf.position.x - 2f, trf.position.y - 1.2f);
+            posProyectil = new Vector2(trf.position.x - 2.3f, trf.position.y - 0.8f);
             
         }
         else
         {
-            posProyectil = new Vector2(trf.position.x + 2f, trf.position.y - 1.2f);
+            posProyectil = new Vector2(trf.position.x + 2.3f, trf.position.y - 0.8f);
         }
 
         Instantiate(proyectilPrefab, posProyectil, Quaternion.identity);
