@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
+using UnityEditor.Callbacks;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -16,6 +17,7 @@ public class EnemigoController : MonoBehaviour
     private Transform jugador;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private Rigidbody2D rb;
    
 
     void Start()
@@ -23,6 +25,8 @@ public class EnemigoController : MonoBehaviour
         jugador = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        rb.simulated = true;
        
     }
 
@@ -76,6 +80,7 @@ public class EnemigoController : MonoBehaviour
         }
     }
     public IEnumerator Morir(){
+        rb.simulated = false;
         yield return new WaitForSeconds(1f);
         Destroy(gameObject);
 

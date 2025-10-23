@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerStatsSO : ScriptableObject
 {
 
-    public int live;
+    public float live;
 
-    public int maxLive;
+    public float maxLive;
 }

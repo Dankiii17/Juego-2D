@@ -35,13 +35,14 @@ public class PlayerController : MonoBehaviour
     public float jumpforce;
     public float vida = 5f;
 
+    public PlayerStatsSO playerStatsSO;
     public GameObject proyectilPrefab;
     private Transform trf;
     private Rigidbody2D rb;
     private Animator animator;
 
     
-
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -49,7 +50,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         posicionInicialx=trf.position.x;
         posicionInicialy=trf.position.y;
-       
+        playerStatsSO.live=playerStatsSO.maxLive
     }
 
     // Update is called once per frame
@@ -280,9 +281,9 @@ public class PlayerController : MonoBehaviour
 
     public void RecibirDaño(float dañoEnemigo)
     {
-        vida -= dañoEnemigo;
-        Debug.Log("Jugador recibe daño: " + dañoEnemigo + " | Vida restante: " + vida);
-        if (vida <= 0)
+        
+        playerStatsSO.live -= dañoEnemigo;
+        if (playerStatsSO.live <= 0)
         {
             animator.SetTrigger("Muerte");
             Morir();
@@ -299,10 +300,12 @@ public class PlayerController : MonoBehaviour
     Gizmos.color = Color.red;
     Gizmos.DrawWireSphere(attackPoint.position, attackRange);
 }
-    public void SpikesDamage(){
+    public void SpikesDamage()
+    {
         animator.SetTrigger("Hit");
-        transform.position = new Vector2(posicionInicialx, posicionInicialy+1);
+        transform.position = new Vector2(posicionInicialx, posicionInicialy + 1);
         rb.velocity = Vector2.zero;
-        
+
     }
+    
 }
