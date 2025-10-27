@@ -7,6 +7,7 @@ public class PlayerStatsSO : ScriptableObject
 {
 
     public float live;
-
     public float maxLive;
+    public int municion;
+    public int municionMax;
 }

@@ -6,18 +6,39 @@ using UnityEngine.UI;
 
 public class HudController : MonoBehaviour
 {
-    [SerializeField]private PlayerStatsSO playerStatsSO;
+    [SerializeField] private PlayerStatsSO playerStatsSO;
 
+   
     [SerializeField] private Slider slider;
-    // Start is called before the first frame update
+
+   
+    [SerializeField] private List<Image> bulletsImages;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
+       
         slider.value = playerStatsSO.live / playerStatsSO.maxLive;
+
+        
+        UpdateAmmoDisplay();
+    }
+
+    private void UpdateAmmoDisplay()
+    {
+        if(bulletsImages == null || bulletsImages.Count == 0) return;
+
+        for (int i = 0; i < bulletsImages.Count; i++)
+        {
+            if (i < playerStatsSO.municion)
+                bulletsImages[i].color = Color.white; 
+            else
+                bulletsImages[i].color = Color.black; 
+        }
     }
 }
+

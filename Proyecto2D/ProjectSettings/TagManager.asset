@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Enemigo
   - Jefe
+  - Hielo
+  - Patrulla
   layers:
   - Default
   - TransparentFX

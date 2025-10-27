@@ -12,7 +12,6 @@ public class EnemigoController : MonoBehaviour
     public float distanciaAtaque = 0.5f; 
     public float vida = 1f;            
     public float dañoEnemigo=1f;
-    public float daño;
     public bool estaMuerto = false;
     private Transform jugador;
     private Animator animator;

@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5548ce52097b5f44890ae57509f917d, type: 3}
   m_Name: Jugador
   m_EditorClassIdentifier: 
-  live: 0
+  live: 2
   maxLive: 5
+  municion: 2
+  municionMax: 5

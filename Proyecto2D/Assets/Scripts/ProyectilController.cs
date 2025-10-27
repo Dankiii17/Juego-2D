@@ -54,5 +54,14 @@ public class ProyectilController : MonoBehaviour
             
             Destroy(gameObject);
         }
+        else if (other.CompareTag("Patrulla"))
+        {
+            EnemigoPatrulla patrulla= other.GetComponent<EnemigoPatrulla>();
+            if(patrulla != null){
+                patrulla .RecibirDaño(100);
+            }
+            
+            Destroy(gameObject);
+        }
     }
 }

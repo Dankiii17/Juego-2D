@@ -60,6 +60,7 @@ public class JefeController : MonoBehaviour
     public void RecibirDaño(float daño)
     {
         vida -= daño;
+        animator.SetTrigger("Hit");
         if (vida <= 0)
         {
             estaMuerto = true;
